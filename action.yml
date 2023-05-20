@@ -1,0 +1,35 @@
+name: rpmsign
+description: A GitHub Action to sign RPM packages using passphrase protected GPG keys.
+branding:
+  icon: pen-tool
+  color: blue
+
+inputs:
+  gpg_private_key:
+    description: GPG private key to be used to sign, in armor protected format.
+    required: true
+  gpg_private_key_password:
+    description: Passphrase to use to sign with this private key.
+    required: true
+  gpg_name:
+    description: Name to use to sign.
+    required: true
+  rpm_folder:
+    description: Folder with rpm files to be signed.
+    required: false
+    default: '.'
+  output_folder:
+    description: Folder where signed rpm files should be placed.
+    required: false
+    default: 'signed_packages'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    # Don't leave spaces between short flags and its values or those spaces will end in your arguments strings.
+    - -k"${{ inputs.gpg_private_key }}"
+    - -p${{ inputs.gpg_private_key_password }}
+    - -n$"{{ inputs.gpg_name }}"
+    - -f${{ inputs.rpm_folder }}
+    - -f${{ inputs.output_folder }}
