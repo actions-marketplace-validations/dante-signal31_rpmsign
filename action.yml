@@ -19,7 +19,7 @@ inputs:
     required: false
     default: '.'
   output_folder:
-    description: Folder where signed rpm files should be placed.
+    description: Folder where signed rpm files must be placed.
     required: false
     default: 'signed_packages'
 
@@ -32,4 +32,4 @@ runs:
     - -p${{ inputs.gpg_private_key_password }}
     - -n$"{{ inputs.gpg_name }}"
     - -f${{ inputs.rpm_folder }}
-    - -f${{ inputs.output_folder }}
+    - -o${{ inputs.output_folder }}
