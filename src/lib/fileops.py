@@ -2,11 +2,13 @@
 
 For rpmsign purposes only need to create a temporal folder where files to be signed should be placed while signing.
 """
+import contextlib
 import os.path
 import tempfile
-import test_common as common
+from test_common.fs import ops
 
 
+@contextlib.contextmanager
 def temp_dir() -> str:
     """ Context manager to create a temporal folder on /tmp
 
@@ -23,6 +25,7 @@ def temp_dir() -> str:
         yield temp_folder
 
 
+@contextlib.contextmanager
 def place_package_at_signing_folder(package_path: str):
     """ Context manager to create a temp folder a place there the package to sign.
 
@@ -32,9 +35,9 @@ def place_package_at_signing_folder(package_path: str):
     with temp_dir() as temp_folder:
         file_name = os.path.basename(package_path)
         temp_file_pathname = os.path.join(temp_folder, file_name)
-        common.fs.ops.copy_file(package_path, temp_file_pathname)
+        ops.copy_file(package_path, temp_file_pathname)
         yield temp_file_pathname
-    
+
 
 def place_signed_file_at_output_folder(signed_file: str, output_folder: str) -> None:
     """ Copy signed file to output folder.
@@ -50,7 +53,7 @@ def place_signed_file_at_output_folder(signed_file: str, output_folder: str) -> 
 
     file_name = os.path.basename(signed_file)
     new_pathname = os.path.join(output_folder, file_name)
-    common.fs.ops.copy_file(signed_file, new_pathname)
+    ops.copy_file(signed_file, new_pathname)
 
 
 def get_files_with_extension(extension: str, folder: str=".") -> str:
