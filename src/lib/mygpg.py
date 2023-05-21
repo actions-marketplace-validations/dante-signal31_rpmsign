@@ -2,6 +2,7 @@
 
 I'm not going to implement every possible gpg operation. For rpmsign purposes only secret key import is needed.
 """""
+import functools
 from typing import Union
 
 import gnupg
@@ -13,6 +14,23 @@ class GPGKeyNotFoundError(Exception):
 
     def __str__(self):
         return f"I didnt find GPG key with fingerprint: {self.name}"
+
+
+def check_key_exists(func):
+    """ Class method decorator to assert that a key with given fingerprint actually exists at keyring.
+
+    If no key is found with that fingerprint then a GPGKeyNotFoundError exception is raised.
+    :raise: mygpg.GPGKeyNotFoundError if no key is found with that name.
+    """
+    @functools.wraps(func)
+    def wrapped(self, *args, **kwargs):
+        if "fingerprint" in kwargs:
+            fingerprint = kwargs["fingerprint"]
+            key_list = self.gpg.list_keys()
+            if fingerprint not in key_list.fingerprints:
+                raise GPGKeyNotFoundError(fingerprint)
+        return func(self, *args, **kwargs)
+    return wrapped
 
 
 class GPGKeyring:
@@ -31,15 +49,12 @@ class GPGKeyring:
                 return key_list.fingerprints[index]
         return None
 
+    @check_key_exists
     def remove_private_key(self, fingerprint: str, passphrase: str) -> None:
         """ Remove key from keyring using its fingerprint.
 
         :raise: mygpg.GPGKeyNotFoundError if no key is found with that name.
         """
-        key_list = self.gpg.list_keys()
-        if fingerprint not in key_list.fingerprints:
-            raise GPGKeyNotFoundError(fingerprint)
-
         self.gpg.delete_keys(fingerprints=fingerprint, secret=True, passphrase=passphrase)
         self.gpg.delete_keys(fingerprints=fingerprint)
 
