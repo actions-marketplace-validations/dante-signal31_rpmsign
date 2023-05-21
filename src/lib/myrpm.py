@@ -1,6 +1,8 @@
 """" Library to deal with rpm operations.
 
 I'm not going to implement every possible rpm operation. For rpm sign is needed.
+
+Remember to install python3-rpm system package! without it this is not going to work.
 """""
 
 

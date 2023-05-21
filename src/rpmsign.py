@@ -72,7 +72,8 @@ def main(args=sys.argv[1:]) -> None:
         """
     arguments: Dict[str, str] = parse_args(args)
 
-    mygpg.import_private_key(
+    keyring = mygpg.GPGKeyring()
+    keyring.import_private_key(
         private_key=arguments["gpg_private_key"],
         passphrase=arguments["gpg_passphrase"],
     )
