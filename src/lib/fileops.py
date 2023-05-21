@@ -60,6 +60,12 @@ def get_files_with_extension(extension: str, folder: str=".") -> str:
     :param folder: Folder where assessed files are placed.
     :return: An iterator over detected files with that extension.
     """
-    raise NotImplementedError
+    if not os.path.isabs(folder):
+        folder = os.path.join(os.getcwd(), folder)
+
+    for entry in os.listdir(folder):
+        entry_pathname = os.path.join(folder, entry)
+        if os.path.isfile(entry_pathname) and os.path.splitext(entry)[1] == f".{extension}":
+            yield entry
 
 
