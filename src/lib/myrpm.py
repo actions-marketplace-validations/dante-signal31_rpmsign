@@ -75,6 +75,7 @@ def sign(name: str, passphrase: str, file: str) -> None:
     :param name: Name (usually an email) to use as signer.
     :param passphrase: Passphrase for this private key.
     :param file: RPM file to sign.
+    :param batch: If true then we have signed a package in the same run, so passphrase should be cached.
     :raise myrpm.SigningError: If signing command meets an error this exception is raised with error string at its message field.
     :return: None
     """

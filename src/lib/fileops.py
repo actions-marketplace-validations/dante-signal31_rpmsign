@@ -27,10 +27,10 @@ def temp_dir() -> str:
 
 @contextlib.contextmanager
 def place_package_at_signing_folder(package_path: str):
-    """ Context manager to create a temp folder a place there the package to sign.
+    """ Context manager to create a temp folder to place there the package to sign.
 
     :param package_path: Package pathname.
-    :return: Context manager with file to sign pathname at temporal folder.
+    :return: Context manager yields the file pathname at its temporal place.
     """
     with temp_dir() as temp_folder:
         file_name = os.path.basename(package_path)

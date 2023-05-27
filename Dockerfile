@@ -13,6 +13,10 @@ RUN echo "Configuring basic environment..."
 # Abort on error.
 RUN set -e
 
+# Copy configuration for gpg-agent.
+COPY gpg-agent.conf /root/.gnupg/
+
+
 # Get system dependencies for this project.
 RUN yum update -y && \
     yum install rpm-sign pinentry-tty python3-pip -y
