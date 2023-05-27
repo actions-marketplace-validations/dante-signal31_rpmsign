@@ -60,19 +60,11 @@ def remove_public_key(fingerprint: str) -> None:
     :param fingerprint: GPG fingerprint of the public key to remove.
     """
     short_fingerprint = fingerprint[-8:]
-    # TODO: Try pexpect.run() instead of spawn().
-    child = pexpect.spawn(f"rpm -qa gpg-pubkey*")
-    child.expect(pexpect.EOF)
-    child.close()
-
-    rpm_key_list_text = (child.before).decode("utf-8")
+    rpm_key_list_text = pexpect.run(f"rpm -qa gpg-pubkey*").decode("utf-8")
     rpm_keys = rpm_key_list_text.split("\r\n")
     for key in rpm_keys:
         if short_fingerprint.lower() in key.lower():
-            # TODO: Try pexpect.run() instead of spawn().
-            child = pexpect.spawn(f"rpm -e {key}")
-            child.expect(pexpect.EOF)
-            child.close()
+            pexpect.run(f"rpm -e {key}")
             return
     raise PublicKeyNotFoundError(fingerprint)
 
@@ -104,12 +96,7 @@ def is_valid_signature(file: str) -> bool:
     :raise myrpm.UnsignedFileError: If current file is actually not signed at all.
     :return: True if it is well signed. False if signature is not correct.
     """
-    # TODO: Try pexpect.run() instead of spawn().
-    child = pexpect.spawn(f"rpm --checksig {file}")
-    # Wait until programs returns
-    child.expect(pexpect.EOF)
-    child.close()
-    message = (child.before).decode("utf-8")
+    message = pexpect.run(f"rpm --checksig {file}").decode("utf-8")
     if "SIGNATURES NOT OK" in message:
         return False
     elif "signatures" in message:
