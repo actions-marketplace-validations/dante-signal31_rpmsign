@@ -13,14 +13,13 @@ class GPGKeyNotFoundError(Exception):
         self.fingerprint = fingerprint
 
     def __str__(self):
-        return f"I didnt find GPG key with fingerprint: {self.name}"
+        return f"I didn't find GPG key with fingerprint: {self.name}"
 
 
 def check_key_exists(func):
     """ Class method decorator to assert that a key with given fingerprint actually exists at keyring.
 
-    If no key is found with that fingerprint then a GPGKeyNotFoundError exception is raised.
-    :raise: mygpg.GPGKeyNotFoundError if no key is found with that name.
+    :raise mygpg.GPGKeyNotFoundError: if no key is found with that fingerprint.
     """
     @functools.wraps(func)
     def wrapped(self, *args, **kwargs):
@@ -63,6 +62,5 @@ class GPGKeyring:
 
         :param private_key: Private key in ASCII armored format.
         :param passphrase: Passphrase to access to private key.
-        :return: None
         """
         self.gpg.import_keys(key_data=private_key, passphrase=passphrase)
