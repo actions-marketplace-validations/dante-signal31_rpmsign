@@ -4,6 +4,8 @@ I'm not going to implement every possible rpm operation. For rpm sign is needed.
 
 Remember to install python3-rpm system package! without it this is not going to work.
 """""
+import os.path
+
 import pexpect
 
 
@@ -47,6 +49,7 @@ def import_public_key(key_file: str) -> None:
     child = pexpect.spawn(f"rpm --import {key_file}")
     # Wait until programs returns
     child.expect(pexpect.EOF)
+    child.close()
     if child.exitstatus != 0:
         raise PublicKeyImportError(child.before)
 
@@ -57,15 +60,19 @@ def remove_public_key(fingerprint: str) -> None:
     :param fingerprint: GPG fingerprint of the public key to remove.
     """
     short_fingerprint = fingerprint[-8:]
+    # TODO: Try pexpect.run() instead of spawn().
     child = pexpect.spawn(f"rpm -qa gpg-pubkey*")
     child.expect(pexpect.EOF)
-    rpm_key_list_text = child.before
+    child.close()
 
-    rpm_keys = rpm_key_list_text.split("\n")
+    rpm_key_list_text = (child.before).decode("utf-8")
+    rpm_keys = rpm_key_list_text.split("\r\n")
     for key in rpm_keys:
-        if short_fingerprint in key:
+        if short_fingerprint.lower() in key.lower():
+            # TODO: Try pexpect.run() instead of spawn().
             child = pexpect.spawn(f"rpm -e {key}")
             child.expect(pexpect.EOF)
+            child.close()
             return
     raise PublicKeyNotFoundError(fingerprint)
 
@@ -79,14 +86,15 @@ def sign(name: str, passphrase: str, file: str) -> None:
     :raise myrpm.SigningError: If signing command meets an error this exception is raised with error string at its message field.
     :return: None
     """
-    # child = pexpect.spawn(f"rpm --define {name} --addsign {file}")
-    # child.pexpect("Passphrase: ")
-    # child.sendline(passphrase)
-    # # Wait until programs returns
-    # child.expect(pexpect.EOF)
-    # if child.exitstatus != 0:
-    #     raise SigningError(child.before)
-    raise NotImplementedError
+    fout = open('log.txt', 'wb')
+    child = pexpect.spawn(f"rpm --define \"_gpg_name {name}\" --addsign {file}", logfile=fout)
+    child.expect("Passphrase: ")
+    child.sendline(passphrase)
+    # Wait until programs returns
+    child.expect(pexpect.EOF)
+    child.close()
+    if child.exitstatus != 0:
+        raise SigningError(child.before)
 
 
 def is_valid_signature(file: str) -> bool:
@@ -96,13 +104,15 @@ def is_valid_signature(file: str) -> bool:
     :raise myrpm.UnsignedFileError: If current file is actually not signed at all.
     :return: True if it is well signed. False if signature is not correct.
     """
-    # child = pexpect.spawn(f"rpm --checksig {file}")
-    # # Wait until programs returns
-    # child.expect(pexpect.EOF)
-    # if "SIGNATURES NOT OK" in child.before:
-    #     return False
-    # elif "signatures" in child.before:
-    #     return True
-    # else:
-    #     raise UnsignedFileError(file)
-    raise NotImplementedError
+    # TODO: Try pexpect.run() instead of spawn().
+    child = pexpect.spawn(f"rpm --checksig {file}")
+    # Wait until programs returns
+    child.expect(pexpect.EOF)
+    child.close()
+    message = (child.before).decode("utf-8")
+    if "SIGNATURES NOT OK" in message:
+        return False
+    elif "signatures" in message:
+        return True
+    else:
+        raise UnsignedFileError(file)

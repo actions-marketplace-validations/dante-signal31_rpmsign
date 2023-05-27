@@ -1,3 +1,4 @@
+import contextlib
 import os
 import pathlib
 
@@ -9,6 +10,7 @@ PRIVATE_KEY_FILE = "src/tests/resources/test_certificate/test_priv.gpg"
 PRIVATE_KEY_PASSWORD = "src/tests/resources/test_certificate/test_certificate_password.txt"
 
 
+@contextlib.contextmanager
 def test_keys_loaded():
     """ Context manager to load test keys temporally and remove then after tests. """
     keyring = mygpg.GPGKeyring()
