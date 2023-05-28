@@ -14,6 +14,9 @@ inputs:
   gpg_name:
     description: Name to use to sign.
     required: true
+  rpm_file:
+    description: A single rpm to be signed.
+    required: false
   rpm_folder:
     description: Folder with rpm files to be signed.
     required: false
@@ -31,5 +34,6 @@ runs:
     - -k"${{ inputs.gpg_private_key }}"
     - -p${{ inputs.gpg_private_key_password }}
     - -n$"{{ inputs.gpg_name }}"
+    - -s${{ inputs.rpm_file }}
     - -f${{ inputs.rpm_folder }}
     - -o${{ inputs.output_folder }}
