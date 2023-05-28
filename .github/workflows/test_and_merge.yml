@@ -56,6 +56,7 @@ jobs:
         - name: Try to use rpmsign as an action to sign a single package.
           uses: dante-signal31/rpmsign@v1.0.0
           with:
+            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
             gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
             gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
             gpg_name: Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>
@@ -86,6 +87,7 @@ jobs:
         - name: Try to use rpmsign as an action to sign multiple packages.
           uses: dante-signal31/rpmsign@v1.0.0
           with:
+            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
             gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
             gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
             gpg_name: Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>
@@ -111,4 +113,4 @@ jobs:
             type: now
             from_branch: staging
             target_branch: main
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+            github_token: ${{ secrets.GHUB_TOKEN }}
