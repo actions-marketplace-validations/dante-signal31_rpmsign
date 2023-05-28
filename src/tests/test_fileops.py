@@ -1,6 +1,6 @@
 import os.path
 
-from lib import fileops
+import lib.fileops as fileops
 
 TEST_PACKAGES_PATH = "src/tests/resources/packages/"
 RPM_PACKAGES = {

@@ -1,9 +1,9 @@
 import os.path
 import pathlib
 
-import fileops
-import mygpg
-import myrpm
+import lib.fileops as fileops
+import lib.mygpg as mygpg
+import lib.myrpm as myrpm
 import rpmsign
 
 import tests.test_myrpm as test_myrpm
