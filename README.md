@@ -15,7 +15,7 @@ context, because in an automated workflow you won't be there to enter the
 passphrase.
 
 This action runs the rpm signing command and enters passphrase for 
-you when rpm ask for it. This wau you can include rpm signing in your
+you when rpm ask for it. This way you can include rpm signing in your
 automated workflows.
 
 ## Inputs
