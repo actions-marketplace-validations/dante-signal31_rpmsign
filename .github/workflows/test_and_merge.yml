@@ -18,11 +18,11 @@ jobs:
         - name: Install rpmsign python dev-dependencies.
           run: |
             python -m pip install --upgrade pip
-            python -m pip install --no-cache-dir -r dev-requirements.txt
+            python -m pip install -r dev-requirements.txt
 
         - name: Install rpmsign system dependencies.
           run: |
-            sudo apt install rpm librpmsign9 gnupg pinentry-tty
+            sudo apt --assume-yes install rpm librpmsign9 gnupg pinentry-tty
 
         - name: Install rpmsign python dependencies.
           run:
