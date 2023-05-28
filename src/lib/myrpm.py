@@ -79,13 +79,18 @@ def sign(name: str, passphrase: str, file: str) -> None:
     """
     fout = open('log.txt', 'wb')
     child = pexpect.spawn(f"rpm --define \"_gpg_name {name}\" --addsign {file}", logfile=fout)
-    child.expect("Passphrase: ")
-    child.sendline(passphrase)
-    # Wait until programs returns
-    child.expect(pexpect.EOF)
-    child.close()
-    if child.exitstatus != 0:
-        raise SigningError(child.before)
+    try:
+        child.expect("Passphrase: ")
+        child.sendline(passphrase)
+        # Wait until programs returns
+        child.expect(pexpect.EOF)
+        child.close()
+        if child.exitstatus != 0:
+            raise SigningError(child.before)
+    except pexpect.exceptions.EOF:
+        raise SigningError(f"I was not asked for a passphrase as it was expected. This is what I saw: {child.before}")
+
+
 
 
 def is_valid_signature(file: str) -> bool:
