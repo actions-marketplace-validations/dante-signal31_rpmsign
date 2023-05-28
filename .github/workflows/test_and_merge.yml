@@ -29,9 +29,9 @@ jobs:
             python -m pip install -r requirements.txt
 
         - name: Copy gpg-agent configuration to reduce passphrase cache to minimum.
-          # gpg --list-keys is executed to be sure ~/.gnupg folder is created.
+          # gpg --batch --list-keys is executed to be sure ~/.gnupg folder is created.
           run: |
-            gpg --list-keys
+            gpg --batch --list-keys
             cp gpg-agent.conf ~/.gnupg/.
 
         - name: Run unit-tests.
