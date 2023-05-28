@@ -65,7 +65,7 @@ RUN chmod 755 $SCRIPT_PATH/rpmsign.py && \
     ln -s $SCRIPT_PATH/rpmsign.py /usr/bin/rpm_sign
 
 # Set rpm_sign as this image entrypoint
-ENTRYPOINT ["rpm_sign"]
+#ENTRYPOINT ["rpm_sign"]
 
 
 # FINAL BUILD VERSION
