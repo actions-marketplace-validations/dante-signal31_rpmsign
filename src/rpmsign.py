@@ -105,7 +105,7 @@ def main(args=sys.argv[1:]) -> None:
             # Time sleep is needed to let gpg-agent cache expire, so gpg ask as a
             # passphrase every time. If you don't let this expiration happen you can
             # expect for a passphrase that is not asked at the end because it is cached
-            # after the las file signed. That problem happened with batch signing of
+            # after the last file was signed. That problem happened with batch signing of
             # multiple files and with unittests.
             time.sleep(2)
             sign_package(arguments, package_absolute_pathname)
