@@ -28,7 +28,8 @@ inputs:
 
 runs:
   using: 'docker'
-  image: 'docker://dantesignal31/rpmsign:latest'
+#  image: 'docker://dantesignal31/rpmsign:latest'
+  image: 'Dockerfile'
   args:
     # Don't leave spaces between short flags and its values or those spaces will end in your arguments strings.
     - -k"${{ inputs.gpg_private_key }}"
