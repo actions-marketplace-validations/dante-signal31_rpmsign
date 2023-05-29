@@ -17,10 +17,11 @@ inputs:
   rpm_file:
     description: A single rpm to be signed.
     required: false
+    default: '##'
   rpm_folder:
     description: Folder with rpm files to be signed.
     required: false
-#    default: '.'
+    default: '##'
   output_folder:
     description: Folder where signed rpm files must be placed.
     required: false
