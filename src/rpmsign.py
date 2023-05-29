@@ -94,9 +94,8 @@ def main(args=sys.argv[1:]) -> None:
     arguments: Dict[str, str] = parse_args(args)
 
     keyring = mygpg.GPGKeyring()
-    private_key_data = pathlib.Path(arguments["gpg_private_key"]).read_text()
     keyring.import_private_key(
-        private_key=private_key_data,
+        private_key=arguments["gpg_private_key"],
         passphrase=arguments["gpg_passphrase"],
     )
 
