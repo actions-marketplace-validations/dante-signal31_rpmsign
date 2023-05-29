@@ -89,7 +89,7 @@ jobs:
           run: |
             sudo apt install rpm librpmsign9
         
-        - name: Import public key whose signature wh are going to verify.
+        - name: Import public key whose signature we are going to verify.
           run: |
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
