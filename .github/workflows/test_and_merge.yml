@@ -42,7 +42,7 @@ jobs:
             python -m pytest
 
     # Job developed following: https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-ghcrio
-    build-and-push_image:
+    build-and-push-image:
       runs-on: ubuntu-latest
       permissions:
         contents: read
@@ -69,7 +69,7 @@ jobs:
 
     integration-test-single-file-signing:
       runs-on: ubuntu-latest
-      needs: build-and-push_image
+      needs: build-and-push-image
       env:
         output_folder: SignedPackages
       steps:
@@ -96,11 +96,11 @@ jobs:
 
         - name: Check that rpmsign actually signed the file.
           run: |
-            rpm --checksig $env:output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
+            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
 
     integration-test-multiple-file-signing:
       runs-on: ubuntu-latest
-      needs: build-and-push_image
+      needs: build-and-push-image
       env:
         output_folder: SignedPackages
       steps:
@@ -127,9 +127,9 @@ jobs:
 
         - name: Check that rpmsign actually signed the files.
           run: |
-            rpm --checksig $env:output_folder/ConsoleKit-0.3.0-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
-            rpm --checksig $env:output_folder/ImageMagick-perl-6.4.0.10-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
-            rpm --checksig $env:output_folder/MySQL-python-1.2.2-7.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
+            rpm --checksig $output_folder/ConsoleKit-0.3.0-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
+            rpm --checksig $output_folder/ImageMagick-perl-6.4.0.10-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
+            rpm --checksig $output_folder/MySQL-python-1.2.2-7.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
 
     merge-master:
       runs-on: ubuntu-latest
