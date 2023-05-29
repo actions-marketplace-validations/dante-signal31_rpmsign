@@ -65,7 +65,7 @@ def parse_args(args: List[str]) -> Dict[str, str]:
                         type=_check_file_exists,
                         default=NONE_TAG,
                         help="Rpm file to be signed.",
-                        metavar="RPM_FOLDER")
+                        metavar="RPM_FILE")
     parser.add_argument("-f", "--rpm_folder",
                         type=_check_folder_exists,
                         default=NONE_TAG,
