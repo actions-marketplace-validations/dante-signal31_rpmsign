@@ -94,7 +94,7 @@ jobs:
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
         - name: Try to use rpmsign as an action to sign a single package.
-          uses: dante-signal31/rpmsign@v1.0.0
+          uses: dante-signal31/rpmsign@staging
           with:
             # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
             gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
@@ -125,7 +125,7 @@ jobs:
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
         - name: Try to use rpmsign as an action to sign multiple packages.
-          uses: dante-signal31/rpmsign@v1.0.0
+          uses: dante-signal31/rpmsign@staging
           with:
             # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
             gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
