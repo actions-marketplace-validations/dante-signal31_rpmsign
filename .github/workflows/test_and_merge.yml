@@ -96,7 +96,7 @@ jobs:
 
         - name: Check that rpmsign actually signed the file.
           run: |
-            rpm --checksig ./$output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
+            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
 
     integration-test-multiple-file-signing:
       runs-on: ubuntu-latest
