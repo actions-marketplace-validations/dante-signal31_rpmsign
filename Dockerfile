@@ -18,7 +18,10 @@ RUN set -e
 
 # Copy configuration for gpg-agent.
 COPY gpg-agent.conf /root/.gnupg/
-
+# Set proper permissions. 600 for files and 700 for directories.
+RUN chown -R root /root/.gnupg/ && \
+    find /root/.gnupg -type f -exec chmod 600 {} && \
+    find /root/.gnupg -type d -exec chmod 700 {}
 
 # Get system dependencies for this project.
 RUN yum update -y && \
