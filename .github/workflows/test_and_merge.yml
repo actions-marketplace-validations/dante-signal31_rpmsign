@@ -7,6 +7,12 @@ on:
       branches: [ staging ]
 
     workflow_dispatch:
+      inputs:
+        debug_enabled:
+          type: boolean
+          description: 'Run the build with tmate debugging enabled (https://github.com/marketplace/actions/debugging-with-tmate)'
+          required: false
+          default: false
 
 env:
   DOCKERHUB_USER: dantesignal31
@@ -93,6 +99,10 @@ jobs:
             gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
             rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
             output_folder: ${{ env.output_folder }}/
+
+        - name: Setup tmate session
+          uses: mxschmitt/action-tmate@v3
+          if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
 #        - name: Check that rpmsign actually signed the file.
 #          run: |
