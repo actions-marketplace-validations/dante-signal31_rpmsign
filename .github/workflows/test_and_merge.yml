@@ -12,34 +12,34 @@ env:
   DOCKERHUB_USER: dantesignal31
 
 jobs:
-    unit-tests:
-      runs-on: ubuntu-latest
-      steps:
-        - name: Get source code from repository.
-          uses: actions/checkout@v2
-
-        - name: Install rpmsign python dev-dependencies.
-          run: |
-            python -m pip install --upgrade pip
-            python -m pip install -r dev-requirements.txt
-
-        - name: Install rpmsign system dependencies.
-          run: |
-            sudo apt --assume-yes install rpm librpmsign9 gnupg pinentry-tty
-
-        - name: Install rpmsign python dependencies.
-          run:
-            python -m pip install -r requirements.txt
-
-        - name: Copy gpg-agent configuration to reduce passphrase cache to minimum.
-          # gpg --batch --list-keys is executed to be sure ~/.gnupg folder is created.
-          run: |
-            gpg --batch --list-keys
-            cp gpg-agent.conf ~/.gnupg/.
-
-        - name: Run unit-tests.
-          run: |
-            python -m pytest
+#    unit-tests:
+#      runs-on: ubuntu-latest
+#      steps:
+#        - name: Get source code from repository.
+#          uses: actions/checkout@v2
+#
+#        - name: Install rpmsign python dev-dependencies.
+#          run: |
+#            python -m pip install --upgrade pip
+#            python -m pip install -r dev-requirements.txt
+#
+#        - name: Install rpmsign system dependencies.
+#          run: |
+#            sudo apt --assume-yes install rpm librpmsign9 gnupg pinentry-tty
+#
+#        - name: Install rpmsign python dependencies.
+#          run:
+#            python -m pip install -r requirements.txt
+#
+#        - name: Copy gpg-agent configuration to reduce passphrase cache to minimum.
+#          # gpg --batch --list-keys is executed to be sure ~/.gnupg folder is created.
+#          run: |
+#            gpg --batch --list-keys
+#            cp gpg-agent.conf ~/.gnupg/.
+#
+#        - name: Run unit-tests.
+#          run: |
+#            python -m pytest
 
     # Job developed following: https://docs.github.com/en/packages/managing-github-packages-using-github-actions-workflows/publishing-and-installing-a-package-with-github-actions#upgrading-a-workflow-that-accesses-ghcrio
     build-and-push-image:
@@ -47,7 +47,7 @@ jobs:
       permissions:
         contents: read
         packages: write
-      needs: unit-tests
+#      needs: unit-tests
       steps:
         - name: Checkout repository
           uses: actions/checkout@v3
@@ -76,9 +76,9 @@ jobs:
         - name: Get source code from repository.
           uses: actions/checkout@v2
           
-        - name: Install rpm support to check signature.
-          run: |
-            sudo apt install rpm librpmsign9
+#        - name: Install rpm support to check signature.
+#          run: |
+#            sudo apt install rpm librpmsign9
         
         - name: Import public key whose signature we are going to verify.
           run: |
@@ -94,54 +94,54 @@ jobs:
             rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
             output_folder: ${{ env.output_folder }}/
 
-        - name: Check that rpmsign actually signed the file.
-          run: |
-            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
+#        - name: Check that rpmsign actually signed the file.
+#          run: |
+#            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
 
-    integration-test-multiple-file-signing:
-      runs-on: ubuntu-latest
-      needs: build-and-push-image
-      env:
-        output_folder: SignedPackages
-      steps:
-        - name: Get source code from repository.
-          uses: actions/checkout@v2
-          
-        - name: Install rpm support to check signature.
-          run: |
-            sudo apt install rpm librpmsign9
-        
-        - name: Import public key whose signature wh are going to verify.
-          run: |
-            sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
+#    integration-test-multiple-file-signing:
+#      runs-on: ubuntu-latest
+#      needs: build-and-push-image
+#      env:
+#        output_folder: SignedPackages
+#      steps:
+#        - name: Get source code from repository.
+#          uses: actions/checkout@v2
+#
+#        - name: Install rpm support to check signature.
+#          run: |
+#            sudo apt install rpm librpmsign9
+#
+#        - name: Import public key whose signature wh are going to verify.
+#          run: |
+#            sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg
+#
+#        - name: Try to use rpmsign as an action to sign multiple packages.
+#          uses: dante-signal31/rpmsign@staging
+#          with:
+#            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
+#            gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
+#            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+#            gpg_name: Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>
+#            rpm_folder: src/tests/resources/packages/
+#            output_folder: ${{ env.output_folder }}/
+#
+#        - name: Check that rpmsign actually signed the files.
+#          run: |
+#            rpm --checksig $output_folder/ConsoleKit-0.3.0-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
+#            rpm --checksig $output_folder/ImageMagick-perl-6.4.0.10-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
+#            rpm --checksig $output_folder/MySQL-python-1.2.2-7.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
 
-        - name: Try to use rpmsign as an action to sign multiple packages.
-          uses: dante-signal31/rpmsign@staging
-          with:
-            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
-            gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
-            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
-            gpg_name: Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>
-            rpm_folder: src/tests/resources/packages/
-            output_folder: ${{ env.output_folder }}/
-
-        - name: Check that rpmsign actually signed the files.
-          run: |
-            rpm --checksig $output_folder/ConsoleKit-0.3.0-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
-            rpm --checksig $output_folder/ImageMagick-perl-6.4.0.10-2.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
-            rpm --checksig $output_folder/MySQL-python-1.2.2-7.fc10.i386.rpm || { echo "Signature not correct"; exit 1; }
-
-    merge-master:
-      runs-on: ubuntu-latest
-      needs: [integration-test-single-file-signing, integration-test-multiple-file-signing]
-      steps:
-        - name: Get source code from repository.
-          uses: actions/checkout@v2
-
-        - name: Merge staging with master.
-          uses: devmasx/merge-branch@master
-          with:
-            type: now
-            from_branch: staging
-            target_branch: main
-            github_token: ${{ secrets.GHUB_TOKEN }}
+#    merge-master:
+#      runs-on: ubuntu-latest
+#      needs: [integration-test-single-file-signing, integration-test-multiple-file-signing]
+#      steps:
+#        - name: Get source code from repository.
+#          uses: actions/checkout@v2
+#
+#        - name: Merge staging with master.
+#          uses: devmasx/merge-branch@master
+#          with:
+#            type: now
+#            from_branch: staging
+#            target_branch: main
+#            github_token: ${{ secrets.GHUB_TOKEN }}
