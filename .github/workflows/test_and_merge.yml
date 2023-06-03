@@ -91,7 +91,7 @@ jobs:
             gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
             gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
             gpg_name: Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>
-            rpm_file: ${{ env.GITHUB_WORKSPACE }}/src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
+            rpm_file: ${{ github.workspace }}/src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
             output_folder: ${{ env.output_folder }}/
 
         - name: Check that rpmsign actually signed the file.
