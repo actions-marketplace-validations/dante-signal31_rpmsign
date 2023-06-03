@@ -14,7 +14,7 @@ ENV virtualenv=/root/venv
 RUN echo "Configuring basic environment..."
 
 # Abort on error.
-RUN set -e
+# RUN set -e
 
 # Copy configuration for gpg-agent.
 COPY gpg-agent.conf /root/.gnupg/
