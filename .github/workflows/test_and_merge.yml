@@ -111,11 +111,9 @@ jobs:
 #            rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
 #            output_folder: ${{ env.output_folder }}/
 
-
-
-#        - name: Check that rpmsign actually signed the file.
-#          run: |
-#            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
+        - name: Check that rpmsign actually signed the file.
+          run: |
+            rpm --checksig $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signature not correct"; exit 1; }
 
 #    integration-test-multiple-file-signing:
 #      runs-on: ubuntu-latest
