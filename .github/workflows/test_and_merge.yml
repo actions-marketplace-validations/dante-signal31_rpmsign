@@ -78,7 +78,7 @@ jobs:
       needs: build-and-push-image
       env:
         gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
-        gpg_private_key_file: test_priv.gpg
+        gpg_private_key_file: src/tests/resources/test_certificate/test_priv.gpg
         gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
         gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
         rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
@@ -95,9 +95,9 @@ jobs:
           run: |
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
-        - name: Create private key file from secret.
-          run: |
-            echo $gpg_private_key >> $gpg_private_key_file
+#        - name: Create private key file from secret.
+#          run: |
+#            echo $gpg_private_key >> $gpg_private_key_file
 
         - name: Setup tmate session
           uses: mxschmitt/action-tmate@v3
