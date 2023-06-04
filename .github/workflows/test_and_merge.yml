@@ -166,7 +166,7 @@ jobs:
           uses: actions/checkout@v2
 
         - name: Merge staging with master.
-          uses: devmasx/merge-branch@master
+          uses: devmasx/merge-branch@v1.4.0
           with:
             type: now
             from_branch: staging
