@@ -21,7 +21,7 @@ TEST_CERTIFICATE_NAME = "Dummy certificate for automated testing (Don\'t use for
 def test_sign_single_file(temp_dir):
     """ Assert a single rpm file can be signed. """
     # First sign the file.
-    arguments = ["-k", pathlib.Path(PRIVATE_KEY_FILE).read_text(),
+    arguments = ["-k", PRIVATE_KEY_FILE,
                  "-p", PASSWORD,
                  "-n", TEST_CERTIFICATE_NAME,
                  "-s", NO_SIGNATURE_PACKAGE,
@@ -40,7 +40,7 @@ def test_sign_single_file(temp_dir):
 def test_sign_multiple_files(temp_dir):
     """ Assert multiple rpm files can be signed at one go. """
     # First sign the file.
-    arguments = ["-k", pathlib.Path(PRIVATE_KEY_FILE).read_text(),
+    arguments = ["-k", PRIVATE_KEY_FILE,
                  "-p", PASSWORD,
                  "-n", TEST_CERTIFICATE_NAME,
                  "-f", PACKAGES_FOLDER,

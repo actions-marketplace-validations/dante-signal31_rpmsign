@@ -51,7 +51,7 @@ def parse_args(args: List[str]) -> Dict[str, str]:
     )
     parser.add_argument("-k", "--gpg_private_key",
                         type=str,
-                        help="GPG private key to be used to sign, in armor protected format.",
+                        help="GPG private key file to be used to sign, in armor protected format.",
                         metavar="GPG_PRIVATE_KEY")
     parser.add_argument("-p", "--gpg_passphrase",
                         type=str,
@@ -95,7 +95,7 @@ def main(args=sys.argv[1:]) -> None:
 
     keyring = mygpg.GPGKeyring()
     keyring.import_private_key(
-        private_key=arguments["gpg_private_key"],
+        private_key_file=arguments["gpg_private_key"],
         passphrase=arguments["gpg_passphrase"],
     )
 
