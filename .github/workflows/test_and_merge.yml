@@ -132,7 +132,7 @@ jobs:
         gpg_private_key_file: test_priv.gpg
         gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
         gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
-        rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
+        rpm_folder: src/tests/resources/packages/
         output_folder: SignedPackages
       steps:
         - name: Get source code from repository.
