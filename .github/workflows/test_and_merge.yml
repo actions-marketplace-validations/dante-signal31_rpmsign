@@ -73,56 +73,56 @@ jobs:
             docker push ${{ env.DOCKERHUB_USER }}/rpmsign:latest
 
 
-#    integration-test-single-file-signing:
-#      runs-on: ubuntu-latest
-#      needs: build-and-push-image
-#      env:
-#        gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
-#        gpg_private_key_file: test_priv.gpg
-#        gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
-#        gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
-#        rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
-#        output_folder: SignedPackages
-#      steps:
-#        - name: Get source code from repository.
-#          uses: actions/checkout@v2
-#
-#        - name: Import public key whose signature we are going to verify.
+    integration-test-single-file-signing:
+      runs-on: ubuntu-latest
+      needs: build-and-push-image
+      env:
+        gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
+        gpg_private_key_file: test_priv.gpg
+        gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+        gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
+        rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
+        output_folder: SignedPackages
+      steps:
+        - name: Get source code from repository.
+          uses: actions/checkout@v2
+
+        - name: Import public key whose signature we are going to verify.
+          run: |
+            sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg
+
+        - name: Setup tmate session
+          uses: mxschmitt/action-tmate@v3
+          if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
+        - name: Create private key file from secret.
+          run: |
+            echo $gpg_private_key | base64 -di > $gpg_private_key_file
+
+#        - name: Use rpmsign dockerhub image to sign a single package.
 #          run: |
-#            sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg
-#
+#            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k $gpg_private_key_file -p $gpg_private_key_password -n "$gpg_name" -s $rpm_file -o $output_folder
+
 #        - name: Setup tmate session
 #          uses: mxschmitt/action-tmate@v3
 #          if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-#
-#        - name: Create private key file from secret.
-#          run: |
-#            echo $gpg_private_key | base64 -di > $gpg_private_key_file
-#
-##        - name: Use rpmsign dockerhub image to sign a single package.
-##          run: |
-##            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k $gpg_private_key_file -p $gpg_private_key_password -n "$gpg_name" -s $rpm_file -o $output_folder
-#
-##        - name: Setup tmate session
-##          uses: mxschmitt/action-tmate@v3
-##          if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
-#
-#        - name: Try to use rpmsign as an action to sign a single package.
-#          uses: dante-signal31/rpmsign@staging
-#          with:
-#            gpg_private_key: ${{ env.gpg_private_key_file }}
-#            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
-#            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
-#            rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
-#            output_folder: ${{ env.output_folder }}/
-#
-#        - name: Remove private key file.
-#          run: |
-#            rm $gpg_private_key_file
-#
-#        - name: Check that signed file is at output folder.
-#          run: |
-#            test -f $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signed file not found"; exit 1; }
+
+        - name: Try to use rpmsign as an action to sign a single package.
+          uses: dante-signal31/rpmsign@staging
+          with:
+            gpg_private_key: ${{ env.gpg_private_key_file }}
+            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
+            rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
+            output_folder: ${{ env.output_folder }}/
+
+        - name: Remove private key file.
+          run: |
+            rm $gpg_private_key_file
+
+        - name: Check that signed file is at output folder.
+          run: |
+            test -f $output_folder/esl-erlang-compat-21.2.6-1.noarch.rpm || { echo "Signed file not found"; exit 1; }
 
     integration-test-multiple-file-signing:
       runs-on: ubuntu-latest
@@ -150,19 +150,19 @@ jobs:
           uses: mxschmitt/action-tmate@v3
           if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
-        - name: Use rpmsign dockerhub image to sign multiple packages.
-          run: |
-            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k $gpg_private_key_file -p $gpg_private_key_password -n "$gpg_name" -f $rpm_folder -o $output_folder
+#        - name: Use rpmsign dockerhub image to sign multiple packages.
+#          run: |
+#            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k $gpg_private_key_file -p $gpg_private_key_password -n "$gpg_name" -f $rpm_folder -o $output_folder
 
-#        - name: Try to use rpmsign as an action to sign multiple packages.
-#          uses: dante-signal31/rpmsign@staging
-#          with:
-#            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
-#            gpg_private_key: ${{ env.gpg_private_key_file }}
-#            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
-#            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
-#            rpm_folder: src/tests/resources/packages/
-#            output_folder: ${{ env.output_folder }}/
+        - name: Try to use rpmsign as an action to sign multiple packages.
+          uses: dante-signal31/rpmsign@staging
+          with:
+            # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
+            gpg_private_key: ${{ env.gpg_private_key_file }}
+            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
+            rpm_folder: src/tests/resources/packages/
+            output_folder: ${{ env.output_folder }}/
 
         - name: Remove private key file.
           run: |
