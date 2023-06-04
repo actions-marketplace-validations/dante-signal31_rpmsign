@@ -92,7 +92,7 @@ jobs:
 
         - name: Get test certificate data.
           run: |
-            echo "TEST_GPG_KEY='$(cat src/tests/resources/test_certificate/test_priv.gpg)'" >> $GITHUB_ENV
+            echo "TEST_GPG_KEY=\"$(cat src/tests/resources/test_certificate/test_priv.gpg)\"" >> $GITHUB_ENV
             echo "TEST_GPG_KEY_PASSWORD=$(cat src/tests/resources/test_certificate/test_certificate_password.txt)" >> $GITHUB_ENV
 
         - name: Try to use rpmsign as an action to sign a single package.
