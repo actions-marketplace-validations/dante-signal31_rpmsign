@@ -62,12 +62,12 @@ def parse_args(args: List[str]) -> Dict[str, str]:
                         help="Name to use to sign.",
                         metavar="GPG_NAME")
     parser.add_argument("-s", "--rpm_file",
-                        type=_check_file_exists,
+                        # type=_check_file_exists,
                         default=NONE_TAG,
                         help="Rpm file to be signed.",
                         metavar="RPM_FILE")
     parser.add_argument("-f", "--rpm_folder",
-                        type=_check_folder_exists,
+                        # type=_check_folder_exists,
                         default=NONE_TAG,
                         help="Folder with rpm files to be signed.",
                         metavar="RPM_FOLDER")
