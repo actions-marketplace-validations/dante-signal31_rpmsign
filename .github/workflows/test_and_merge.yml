@@ -90,12 +90,17 @@ jobs:
           run: |
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
+        - name: Get test certificate data.
+          run: |
+            echo "PRIVATE_GPG_KEY=$(cat src/tests/resources/test_certificate/test_priv.gpg)" >> $GITHUB_ENV
+            echo "GPG_KEY_PASSWORD=$(cat src/tests/resources/test_certificate/test_certificate_password.txt)" >> $GITHUB_ENV
+
         - name: Try to use rpmsign as an action to sign a single package.
           uses: dante-signal31/rpmsign@staging
           with:
             # Actually signing with dummy certificate you can find at src/tests/resources/test_certificate
-            gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
-            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+            gpg_private_key: ${{ env.PRIVATE_GPG_KEY }}
+            gpg_private_key_password: ${{ env.GPG_KEY_PASSWORD }}
             gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
             rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
             output_folder: ${{ env.output_folder }}/
