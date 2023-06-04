@@ -11,7 +11,7 @@ import lib.myrpm as myrpm
 import lib.fileops as fileops
 
 DEFAULT_OUTPUT_FOLDER = "signed_packages"
-NONE_TAG = "##"
+NONE_TAG = "_##"
 
 
 def _check_folder_exists(folder: str) -> str:
