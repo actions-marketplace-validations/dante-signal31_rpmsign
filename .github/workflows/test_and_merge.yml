@@ -96,7 +96,7 @@ jobs:
 
         - name: Use rpmsign dockerhub image to sign a single package.
           run: |
-            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "$gpg_private_key" -p $gpg_private_key_password -n $gpg_name -s $rpm_file -o $output_folder 
+            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "$gpg_private_key" -p $gpg_private_key_password -n "$gpg_name" -s $rpm_file -o $output_folder 
 
         - name: Setup tmate session
           uses: mxschmitt/action-tmate@v3
