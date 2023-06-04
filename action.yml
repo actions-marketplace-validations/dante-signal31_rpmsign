@@ -33,7 +33,7 @@ runs:
 #
 #  args:
 #    # Don't leave spaces between short flags and its values or those spaces will end prefixed in your arguments strings.
-#    - -k"${{ inputs.gpg_private_key }}"
+#    - -k${{ inputs.gpg_private_key }}
 #    - -p${{ inputs.gpg_private_key_password }}
 #    - -n${{ inputs.gpg_name }}
 #    - -s${{ inputs.rpm_file }}
@@ -44,5 +44,5 @@ runs:
     - name: Use rpmsign image to sign given rpm package.
       shell: bash
       run: |
-        echo "Running command: docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "${{ inputs.gpg_private_key }}" -p ${{ inputs.gpg_private_key_password }} -n "${{ inputs.gpg_name }}" -s ${{ inputs.rpm_file }} -f ${{ inputs.rpm_folder }} -o ${{ inputs.output_folder }}"
-        docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "${{ inputs.gpg_private_key }}" -p ${{ inputs.gpg_private_key_password }} -n "${{ inputs.gpg_name }}" -s ${{ inputs.rpm_file }} -f ${{ inputs.rpm_folder }} -o ${{ inputs.output_folder }}
+        echo "Running command: docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k ${{ inputs.gpg_private_key }} -p ${{ inputs.gpg_private_key_password }} -n "${{ inputs.gpg_name }}" -s ${{ inputs.rpm_file }} -f ${{ inputs.rpm_folder }} -o ${{ inputs.output_folder }}"
+        docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k ${{ inputs.gpg_private_key }} -p ${{ inputs.gpg_private_key_password }} -n "${{ inputs.gpg_name }}" -s ${{ inputs.rpm_file }} -f ${{ inputs.rpm_folder }} -o ${{ inputs.output_folder }}
