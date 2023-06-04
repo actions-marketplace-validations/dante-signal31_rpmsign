@@ -98,22 +98,22 @@ jobs:
           uses: mxschmitt/action-tmate@v3
           if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
-        - name: Use rpmsign dockerhub image to sign a single package.
-          run: |
-            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "$gpg_private_key" -p $gpg_private_key_password -n "$gpg_name" -s $rpm_file -o $output_folder
+#        - name: Use rpmsign dockerhub image to sign a single package.
+#          run: |
+#            docker run -v $(pwd):/workspace --workdir /workspace dantesignal31/rpmsign:latest -k "$gpg_private_key" -p $gpg_private_key_password -n "$gpg_name" -s $rpm_file -o $output_folder
 
 #        - name: Setup tmate session
 #          uses: mxschmitt/action-tmate@v3
 #          if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
 
-#        - name: Try to use rpmsign as an action to sign a single package.
-#          uses: dante-signal31/rpmsign@staging
-#          with:
-#            gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
-#            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
-#            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
-#            rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
-#            output_folder: ${{ env.output_folder }}/
+        - name: Try to use rpmsign as an action to sign a single package.
+          uses: dante-signal31/rpmsign@staging
+          with:
+            gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
+            gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
+            gpg_name: "Dummy certificate for automated testing (Don\'t use for sign anything important. Use for testing signing in automated workflows.) <dummy_test@gmail.com>"
+            rpm_file: src/tests/resources/packages/package_without_sign/esl-erlang-compat-21.2.6-1.noarch.rpm
+            output_folder: ${{ env.output_folder }}/
 
         - name: Check that signed file is at output folder.
           run: |
