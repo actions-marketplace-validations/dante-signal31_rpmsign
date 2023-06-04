@@ -102,7 +102,7 @@ jobs:
 
         - name: Create private key file from secret.
           run: |
-            echo $gpg_private_key | base64 --decode > $gpg_private_key_file
+            echo $gpg_private_key | base64 -di > $gpg_private_key_file
 
 #        - name: Use rpmsign dockerhub image to sign a single package.
 #          run: |
