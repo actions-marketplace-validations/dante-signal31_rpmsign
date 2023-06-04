@@ -96,13 +96,13 @@ jobs:
           run: |
             sudo rpm --import src/tests/resources/test_certificate/test_pub.gpg 
 
-        - name: Create private key file from secret.
-          run: |
-            echo $gpg_private_key | base64 --decode >> $gpg_private_key_file
-
         - name: Setup tmate session
           uses: mxschmitt/action-tmate@v3
           if: ${{ github.event_name == 'workflow_dispatch' && inputs.debug_enabled }}
+
+        - name: Create private key file from secret.
+          run: |
+            echo $gpg_private_key | base64 --decode > $gpg_private_key_file
 
 #        - name: Use rpmsign dockerhub image to sign a single package.
 #          run: |
