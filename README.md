@@ -35,7 +35,7 @@ To sign just a package do:
 
 ```yaml
  - name: Sign all RPM packages at Packages folder.
-   uses: dante-signal31/rpmsign@v1.0.0
+   uses: dante-signal31/rpmsign@v1.0.2
    with:
      gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
      gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
@@ -48,7 +48,7 @@ You'll find your signed package at SignedPackages folder. Original unsigned file
 To sign every package found at, for example Packages/ folder, do:
 ```yaml
  - name: Sign all RPM packages at Packages folder.
-   uses: dante-signal31/rpmsign@v1.0.0
+   uses: dante-signal31/rpmsign@v1.0.2
    with:
      gpg_private_key: ${{ secrets.PRIVATE_GPG_KEY }}
      gpg_private_key_password: ${{ secrets.GPG_KEY_PASSWORD }}
