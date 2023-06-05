@@ -81,8 +81,9 @@ in base 64. Just do in your console:
 base64 -i test_priv.gpg -o test_priv.gpg.base64
 ```
 
-You can store the content of base64 encoded file (in our example test_priv.gpg.base64) in your secret . Once you have 
-echoed the content of your secret in a file, you must decode it from base64 before to passing it to rpmsign:
+You can store the content of base64 encoded file (in our example test_priv.gpg.base64) in your secret . To recover the 
+private key file from your secret, echo the secret variable through base64 (in decoding mode) before passing it to 
+rpmsign:
 
 ```commandline
 echo $gpg_private_key | base64 -di > recovered_priv_key.gpg
