@@ -1,7 +1,7 @@
 name: rpmsign
 description: A GitHub Action to sign RPM packages using passphrase protected GPG keys.
 branding:
-  icon: pen-tool
+  icon: edit
   color: blue
 
 inputs:
