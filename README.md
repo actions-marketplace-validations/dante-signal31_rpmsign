@@ -60,8 +60,9 @@ With that configuration, every RPM package found at Packages/ folder is going to
 copied to SignedPackages folder and signed there.
 
 Be aware that you should enter *gpg_private_key_password* 
-through a secret. For *gpg_private_key* I usually create a file on the fly from a secret and I remove it after rpmsign has used it. Never hard code those parameters in your source, because
-they would be exposed to whoever reads your source.
+through a secret. For *gpg_private_key* I usually create a file on the fly from a secret and I remove it after rpmsign 
+has used it. Never hard code those parameters in your source, because they would be exposed to whoever reads 
+your source.
 
 The *gpg_private_key* file should be in protected ASCII armor format. You know,
 the one with this format:
@@ -72,5 +73,21 @@ the one with this format:
 -----END PGP PRIVATE KEY BLOCK-----
 ```
 
+**CAUTION:** GitHub mangles armor formatted private keys when stored in secrets. So if you echo that secret in a file
+and pass that file to rpmsign, you will get an error. The trick is to store the armor private key in a secret encoded 
+in base 64. Just do in your console:
+
+```commandline
+base64 -i test_priv.gpg -o test_priv.gpg.base64
+```
+
+You can store the content of base64 encoded file (in our example test_priv.gpg.base64) in your secret . Once you have 
+echoed the content of your secret in a file, you must decode it from base64 before to passing it to rpmsign:
+
+```commandline
+echo $gpg_private_key | base64 -di > recovered_priv_key.gpg
+```
+
+---
 If you want to use rpmsign for other CI/CD platforms instead GitHub Actions, you can use directly
 its docker image. You can find it at: https://hub.docker.com/repository/docker/dantesignal31/rpmsign/general
