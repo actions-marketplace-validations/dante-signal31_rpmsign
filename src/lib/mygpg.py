@@ -3,6 +3,7 @@
 I'm not going to implement every possible gpg operation. For rpmsign purposes only secret key import is needed.
 """""
 import functools
+import pathlib
 from typing import Union
 
 import gnupg
@@ -57,10 +58,11 @@ class GPGKeyring:
         self.gpg.delete_keys(fingerprints=fingerprint, secret=True, passphrase=passphrase)
         self.gpg.delete_keys(fingerprints=fingerprint)
 
-    def import_private_key(self, private_key: str, passphrase: str) -> None:
+    def import_private_key(self, private_key_file: str, passphrase: str) -> None:
         """ Import given private key into keyring.
 
-        :param private_key: Private key in ASCII armored format.
+        :param private_key_file: Private key file in ASCII armored format.
         :param passphrase: Passphrase to access to private key.
         """
-        self.gpg.import_keys(key_data=private_key, passphrase=passphrase)
+        private_key_data = pathlib.Path(private_key_file).read_text()
+        self.gpg.import_keys(key_data=private_key_data, passphrase=passphrase)

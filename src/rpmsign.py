@@ -11,6 +11,7 @@ import lib.myrpm as myrpm
 import lib.fileops as fileops
 
 DEFAULT_OUTPUT_FOLDER = "signed_packages"
+NONE_TAG = "_##"
 
 
 def _check_folder_exists(folder: str) -> str:
@@ -19,7 +20,7 @@ def _check_folder_exists(folder: str) -> str:
     :param folder: Folder to check.
     :return: Given string if it is actually a folder.
     """
-    if os.path.isdir(folder):
+    if folder == NONE_TAG or os.path.isdir(folder):
         return folder
     else:
         raise argparse.ArgumentTypeError(f"Given folder {folder} does not exists.")
@@ -31,7 +32,7 @@ def _check_file_exists(file: str) -> str:
     :param file: File to check.
     :return: Given string if it is actually a file.
     """
-    if os.path.isfile(file):
+    if file == NONE_TAG or os.path.isfile(file):
         return file
     else:
         raise argparse.ArgumentTypeError(f"Given file {file} does not exists.")
@@ -50,7 +51,7 @@ def parse_args(args: List[str]) -> Dict[str, str]:
     )
     parser.add_argument("-k", "--gpg_private_key",
                         type=str,
-                        help="GPG private key to be used to sign, in armor protected format.",
+                        help="GPG private key file to be used to sign, in armor protected format.",
                         metavar="GPG_PRIVATE_KEY")
     parser.add_argument("-p", "--gpg_passphrase",
                         type=str,
@@ -62,12 +63,12 @@ def parse_args(args: List[str]) -> Dict[str, str]:
                         metavar="GPG_NAME")
     parser.add_argument("-s", "--rpm_file",
                         type=_check_file_exists,
-                        default=None,
+                        default=NONE_TAG,
                         help="Rpm file to be signed.",
-                        metavar="RPM_FOLDER")
+                        metavar="RPM_FILE")
     parser.add_argument("-f", "--rpm_folder",
                         type=_check_folder_exists,
-                        default=None,
+                        default=NONE_TAG,
                         help="Folder with rpm files to be signed.",
                         metavar="RPM_FOLDER")
     parser.add_argument("-o", "--output_folder",
@@ -93,13 +94,12 @@ def main(args=sys.argv[1:]) -> None:
     arguments: Dict[str, str] = parse_args(args)
 
     keyring = mygpg.GPGKeyring()
-    private_key_data = pathlib.Path(arguments["gpg_private_key"]).read_text()
     keyring.import_private_key(
-        private_key=private_key_data,
+        private_key_file=arguments["gpg_private_key"],
         passphrase=arguments["gpg_passphrase"],
     )
 
-    if "rpm_folder" in arguments and not arguments["rpm_folder"] is None:
+    if "rpm_folder" in arguments and not arguments["rpm_folder"] == NONE_TAG:
         for package in fileops.get_files_with_extension("rpm", folder=arguments["rpm_folder"]):
             package_absolute_pathname = os.path.join(arguments["rpm_folder"], package)
             # Time sleep is needed to let gpg-agent cache expire, so gpg ask as a
@@ -109,7 +109,7 @@ def main(args=sys.argv[1:]) -> None:
             # multiple files and with unittests.
             time.sleep(2)
             sign_package(arguments, package_absolute_pathname)
-    elif "rpm_file" in arguments and not arguments["rpm_file"] is None:
+    elif "rpm_file" in arguments and not arguments["rpm_file"] == NONE_TAG:
         time.sleep(2)
         sign_package(arguments, arguments["rpm_file"])
 

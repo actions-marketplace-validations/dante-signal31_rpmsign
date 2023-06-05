@@ -6,7 +6,7 @@ branding:
 
 inputs:
   gpg_private_key:
-    description: GPG private key to be used to sign, in armor protected format.
+    description: GPG private key file to be used to sign, in armor protected format.
     required: true
   gpg_private_key_password:
     description: Passphrase to use to sign with this private key.
@@ -17,27 +17,42 @@ inputs:
   rpm_file:
     description: A single rpm to be signed.
     required: false
+    default: _##
   rpm_folder:
     description: Folder with rpm files to be signed.
     required: false
-    default: '.'
+    default: _##
   output_folder:
     description: Folder where signed rpm files must be placed.
     required: false
     default: 'signed_packages'
 
 runs:
+# Using a docker action should be the way to launch this action. Instead, I've used a composite action because passing
+# arguments through a docker action made my docker container to return an error. I know that a docker action actually
+# is a kind of syntactic sugar that takes arguments and pass them to a docker container, but I don't know how github
+# mangles those arguments, but they cause an error while it does not happen when I pass those same arguments using
+# a composite action that runs the image manually.
+# I leave here the docker action configuration I've tried. If you find the problem root please let me know because
+# I will be happy to include your changes.
+
 #  using: 'docker'
 #  image: 'docker://dantesignal31/rpmsign:latest'
-#  image: '_Dockerfile'
-  using: "composite"
+#
 #  args:
-#    # Don't leave spaces between short flags and its values or those spaces will end in your arguments strings.
-#    - -k"${{ inputs.gpg_private_key }}"
+#    # Don't leave spaces between short flags and its values or those spaces will end prefixed in your arguments strings.
+#    - -k${{ inputs.gpg_private_key }}
 #    - -p${{ inputs.gpg_private_key_password }}
-#    - -n$"{{ inputs.gpg_name }}"
+#    - -n${{ inputs.gpg_name }}
 #    - -s${{ inputs.rpm_file }}
 #    - -f${{ inputs.rpm_folder }}
 #    - -o${{ inputs.output_folder }}
+
+  using: composite
   steps:
-    - run: echo "composite"
+    - name: Use rpmsign image to sign given rpm package.
+      shell: bash
+      run: |
+        current_folder=$(pwd)
+        echo "Running command: docker run -v $current_folder:/workspace --workdir /workspace dantesignal31/rpmsign:latest -k ${{ inputs.gpg_private_key }} -p ${{ inputs.gpg_private_key_password }} -n \"${{ inputs.gpg_name }}\" -s \"${{ inputs.rpm_file }}\" -f \"${{ inputs.rpm_folder }}\" -o ${{ inputs.output_folder }}"
+        docker run -v $current_folder:/workspace --workdir /workspace dantesignal31/rpmsign:latest -k ${{ inputs.gpg_private_key }} -p ${{ inputs.gpg_private_key_password }} -n "${{ inputs.gpg_name }}" -s "${{ inputs.rpm_file }}" -f "${{ inputs.rpm_folder }}" -o ${{ inputs.output_folder }}

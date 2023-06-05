@@ -1,5 +1,8 @@
 ARG dev_build
 
+##############################
+# BASE VERSION
+##############################
 FROM fedora:38 AS base
 # Image metadata.
 LABEL maintainer="dante-signal31 (dante.signal31@gmail.com)"
@@ -11,11 +14,14 @@ ENV virtualenv=/root/venv
 RUN echo "Configuring basic environment..."
 
 # Abort on error.
-RUN set -e
+# RUN set -e
 
 # Copy configuration for gpg-agent.
 COPY gpg-agent.conf /root/.gnupg/
-
+# Set proper permissions. 600 for files and 700 for directories.
+RUN chown -R root /root/.gnupg/ && \
+    find /root/.gnupg -type f -exec chmod 600 {} \; && \
+    find /root/.gnupg -type d -exec chmod 700 {} \;
 
 # Get system dependencies for this project.
 RUN yum update -y && \
@@ -25,7 +31,9 @@ RUN yum update -y && \
 #RUN python3 -m venv $virtualenv
 
 
+##############################
 # DEVELOPMENT VERSION
+##############################
 FROM base AS version-1
 RUN echo "Configuring a development environment..."
 
@@ -44,8 +52,9 @@ RUN pip install --no-cache-dir -r $DEV_PATH/dev-requirements.txt
 COPY requirements.txt $DEV_PATH/
 RUN pip install --no-cache-dir -r $DEV_PATH/requirements.txt
 
-
+##############################
 # RELEASE VERSION
+##############################
 FROM base AS version-0
 RUN echo "Configuring a release environment..."
 
@@ -67,6 +76,8 @@ RUN chmod 755 $SCRIPT_PATH/rpmsign.py && \
 ENTRYPOINT ["rpm_sign"]
 
 
+##############################
 # FINAL BUILD VERSION
+##############################
 FROM version-${dev_build} AS final
 RUN echo "Environment ot type ${dev_build} ready"
